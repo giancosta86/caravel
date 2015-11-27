@@ -26,13 +26,13 @@ buildscript {
     }
 
     dependencies {
-        classpath "info.gianlucacosta.moonlicense:moonlicense-gradle:3.1"
+        classpath "info.gianlucacosta.moonlicense:moonlicense-gradle:4.0"
     }
 }
 
 apply plugin: "info.gianlucacosta.moonlicense"
 
-version = '1.0'
+version = '1.1'
 
 description = 'Utility library for Go'
 
