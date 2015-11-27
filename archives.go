@@ -27,6 +27,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 /*
@@ -38,6 +39,18 @@ Absolute entry paths in the zip file are not allowed.
 The function returns nil on success, an error on failure.
 */
 func ExtractZip(zipPath string, targetDir string) (err error) {
+	return ExtractZipSkipLevels(zipPath, targetDir, 0)
+}
+
+/*
+ExtractZipSkipLevels extracts the zip as ExtractZip does, but ignoring the first
+"skippedLevels" directory nodes in the tree. "skippedLevels" must be >= 0.
+*/
+func ExtractZipSkipLevels(zipPath string, targetDir string, skippedLevels int) (err error) {
+	if skippedLevels < 0 {
+		return fmt.Errorf("The number of skipped levels must be >= 0")
+	}
+
 	zipReader, err := zip.OpenReader(zipPath)
 	if err != nil {
 		return err
@@ -49,6 +62,18 @@ func ExtractZip(zipPath string, targetDir string) (err error) {
 
 		if path.IsAbs(entryRelativePath) {
 			return fmt.Errorf("Absolute entry paths are not allowed: '%v'", entryRelativePath)
+		}
+
+		if skippedLevels > 0 {
+			entryRelativePathComponents := strings.Split(entryRelativePath, "/")
+
+			if len(entryRelativePathComponents) < skippedLevels+1 {
+				continue
+			}
+
+			newEntryRelativePathComponents := entryRelativePathComponents[skippedLevels:]
+
+			entryRelativePath = path.Join(newEntryRelativePathComponents...)
 		}
 
 		osSpecificEntryRelativePath := filepath.FromSlash(entryRelativePath)
