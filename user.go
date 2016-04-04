@@ -21,14 +21,21 @@
 package caravel
 
 import (
+	"os"
 	"os/user"
 	"path/filepath"
 )
 
 /*
 GetUserDirectory returns the user's directory, or an error on failure.
+First it looks for a "HOME" environment variable; then it employs user.Current()
 */
 func GetUserDirectory() (userDir string, err error) {
+	environmentHome := os.Getenv("HOME")
+	if environmentHome != "" {
+		return environmentHome, nil
+	}
+
 	user, err := user.Current()
 	if err != nil {
 		return "", err
