@@ -30,14 +30,14 @@ import (
 )
 
 /*
-BashTerminal is a terminal provided by the BASH-shell
+BashTerminal is a terminal provided by the Bash shell
 */
 type BashTerminal struct {
 	AnsiTerminal
 }
 
 /*
-NewBashTerminal creates an ANSI terminal implemented by the BASH shell running the program
+NewBashTerminal creates an ANSI terminal implemented by the Bash shell running the program
 */
 func NewBashTerminal() *BashTerminal {
 	rows, columns := getBashTerminalSize()
